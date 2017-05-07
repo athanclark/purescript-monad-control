@@ -1,0 +1,21 @@
+{
+  "name": "purescript-monad-control",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "output"
+  ],
+  "dependencies": {
+    "purescript-prelude": "2.x",
+    "purescript-console": "2.x",
+    "purescript-identity": "2.x",
+    "purescript-transformers": "2.x",
+    "purescript-functors": "1.x",
+    "purescript-lists": "3.x",
+    "purescript-arrays": "3.x"
+  },
+  "devDependencies": {
+    "purescript-psci-support": "2.x"
+  }
+}
