@@ -17,15 +17,14 @@ import Data.Either (Either (..))
 import Data.Tuple (Tuple (..))
 import Data.Maybe (Maybe (..))
 import Data.Identity (Identity (..))
-import Data.List (List (..))
+import Data.List (List)
 import Data.Monoid (class Monoid, mempty)
-import Control.Monad.Base (class MonadBase, liftBase)
+import Control.Monad.Base (class MonadBase)
 import Control.Monad.Eff (Eff)
 import Control.Monad.Trans.Class (class MonadTrans, lift)
 import Control.Monad.Reader.Trans (ReaderT (..))
 import Control.Monad.Writer.Trans (WriterT (..), runWriterT)
 import Control.Monad.State.Trans (StateT (..), runStateT)
-import Control.Monad.Cont.Trans (ContT)
 import Control.Monad.Except.Trans (ExceptT (..), runExceptT)
 -- import Control.Monad.List.Trans (ListT (..))
 import Control.Monad.Maybe.Trans (MaybeT (..), runMaybeT)
@@ -45,6 +44,9 @@ instance readerTMonadTransControl :: MonadTransControl (ReaderT r) Identity wher
 
 
 data WriterTStT w a = WriterTStT w a
+
+instance functorWriterTStT :: Functor (WriterTStT w) where
+  map f (WriterTStT w x) = WriterTStT w (f x)
 
 writerTStTToTuple :: forall w a. WriterTStT w a -> Tuple a w
 writerTStTToTuple (WriterTStT w a) = Tuple a w
