@@ -153,24 +153,22 @@ instance rwsTMonadBaseControl :: (MonadBaseControl base m stM, Monad m, Monad ba
 
 
 defaultLiftBaseWith :: forall base m t stM stT b
-                     . ( MonadBaseControl base m stM
-                       , Monad m
-                       , Monad base
-                       , MonadTrans t
-                       , MonadTransControl t stT
-                       )
+                     . MonadBaseControl base m stM
+                    => Monad m
+                    => Monad base
+                    => MonadTrans t
+                    => MonadTransControl t stT
                     => -- MonadBaseControl base (t m) (Compose stM stT)
                        ((forall a. t m a -> base (Compose stM stT a)) -> base b) -> t m b
 defaultLiftBaseWith f = liftWith \run -> liftBaseWith \runInBase -> f (\x -> Compose <$> runInBase (run x))
 
 
 defaultRestoreM :: forall base m t stM stT a
-                 . ( MonadBaseControl base m stM
-                   , Monad m
-                   , Monad base
-                   , MonadTrans t
-                   , MonadTransControl t stT
-                   )
+                 . MonadBaseControl base m stM
+                => Monad m
+                => Monad base
+                => MonadTrans t
+                => MonadTransControl t stT
                 => base (Compose stM stT a) -> t m a
 defaultRestoreM x = restoreT (restoreM (runCompose <$> x))
 

@@ -7,15 +7,15 @@
     "output"
   ],
   "dependencies": {
-    "purescript-prelude": "2.x",
-    "purescript-console": "2.x",
-    "purescript-identity": "2.x",
-    "purescript-transformers": "2.x",
-    "purescript-functors": "1.x",
-    "purescript-lists": "3.x",
-    "purescript-arrays": "3.x"
+    "purescript-prelude": "3.x",
+    "purescript-console": "3.x",
+    "purescript-identity": "3.x",
+    "purescript-transformers": "3.x",
+    "purescript-functors": "2.x",
+    "purescript-lists": "4.x",
+    "purescript-arrays": "4.x"
   },
   "devDependencies": {
-    "purescript-psci-support": "2.x"
+    "purescript-psci-support": "3.0"
   }
 }

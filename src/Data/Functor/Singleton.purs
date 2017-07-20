@@ -7,8 +7,20 @@ import Data.Identity (Identity (..))
 import Data.Tuple (Tuple (..))
 
 
+-- | Instances must follow these laws:
+-- |
+-- | ```purescript
+-- | inverse :: forall f a. Applicative f => Prop
+-- | inverse =
+-- |      (getSingleton :: f a -> a) <<< (pure :: a -> f a)
+-- |   == (id :: a -> a)
+-- |
+-- | viaconst :: forall f a b. Functor f => Prop
+-- | viaconst = forall (x :: b). forall (xs :: f a).
+-- |      (getSingleton :: f a -> a) <<< (map (const x) :: f a -> f b)
+-- |   == (const x :: f a -> b)
+-- | ```
 class (Functor f) <= SingletonFunctor f where
-  -- | `forall x. getSingleton (map (const x) xs) == x`
   getSingleton :: forall a. f a -> a
 
 
