@@ -18,5 +18,9 @@
   "license": "BSD-3-Clause",
   "devDependencies": {
     "purescript-psci-support": "3.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/athanclark/purescript-monad-control.git"
   }
 }
