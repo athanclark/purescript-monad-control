@@ -17,7 +17,7 @@ import Data.Tuple (Tuple (..))
 -- |
 -- | viaconst :: forall f a b. Functor f => Prop
 -- | viaconst = forall (x :: b). forall (xs :: f a).
--- |      (getSingleton :: f a -> a) <<< (map (const x) :: f a -> f b)
+-- |      (getSingleton :: f b -> b) <<< (map (const x) :: f a -> f b)
 -- |   == (const x :: f a -> b)
 -- | ```
 class (Functor f) <= SingletonFunctor f where
