@@ -15,6 +15,7 @@
     "purescript-lists": "4.x",
     "purescript-arrays": "4.x"
   },
+  "license": "BSD-3-Clause",
   "devDependencies": {
     "purescript-psci-support": "3.0"
   }
