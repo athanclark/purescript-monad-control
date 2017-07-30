@@ -1,7 +1,7 @@
 module Data.Functor.Singleton where
 
-import Control.Monad.Trans.Control (WriterTStT (..))
-import Prelude (class Functor, Unit, unit)
+import Control.Monad.Trans.Control (WriterTStT (..), class MonadBaseControl, liftBaseWith, class MonadTransControl, liftWith)
+import Prelude (class Functor, class Monad, Unit, unit, map, (<<<))
 import Data.Functor.Compose (Compose (..))
 import Data.Identity (Identity (..))
 import Data.Tuple (Tuple (..))
@@ -38,3 +38,19 @@ instance singletonFunctorUnitFunction :: SingletonFunctor ((->) Unit) where
 
 instance singletonFunctorWriterTStT :: SingletonFunctor (WriterTStT w) where
   getSingleton (WriterTStT _ x) = x
+
+
+liftWith_ :: forall t m stT b
+           . MonadTransControl t stT
+          => SingletonFunctor stT
+          => Monad m
+          => ((forall a. t m a -> m a) -> m b) -> t m b
+liftWith_ f = liftWith \run -> f (map getSingleton <<< run)
+
+liftBaseWith_ :: forall base m stM b
+               . MonadBaseControl base m stM
+               => SingletonFunctor stM
+               => Functor base
+               => ((forall a. m a -> base a) -> base b)
+               -> m b
+liftBaseWith_ f = liftBaseWith \runInBase -> f (map getSingleton <<< runInBase)
