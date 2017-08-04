@@ -1,8 +1,9 @@
 /bower_components/
 /node_modules/
 /.pulp-cache/
-/output/
-!/output/Control.Monad.Trans.Control/**
+!/output
+/output/*
+!/output/Control.Monad.Trans.Control/
 /generated-docs/
 /.psc*
 /.psa*
