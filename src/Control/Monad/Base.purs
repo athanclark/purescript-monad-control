@@ -7,7 +7,9 @@ import Data.Maybe (Maybe)
 import Data.Identity (Identity)
 import Data.List (List)
 import Data.Monoid (class Monoid)
+import Control.Monad.Aff (Aff)
 import Control.Monad.Eff (Eff)
+import Control.Monad.Eff.Class (liftEff)
 import Control.Monad.Trans.Class (lift)
 import Control.Monad.Reader.Trans (ReaderT)
 import Control.Monad.Writer.Trans (WriterT)
@@ -17,10 +19,14 @@ import Control.Monad.Except.Trans (ExceptT)
 import Control.Monad.List.Trans (ListT)
 import Control.Monad.Maybe.Trans (MaybeT)
 import Control.Monad.RWS.Trans (RWST)
+import Control.Monad.Free.Trans (FreeT)
 
 
 class (Monad b, Monad m) <= MonadBase b m | m -> b where
   liftBase :: forall a. b a -> m a
+
+instance affMonadBase :: MonadBase (Aff e) (Aff e) where
+  liftBase = id
 
 instance effMonadBase :: MonadBase (Eff e) (Eff e) where
   liftBase = id
@@ -70,4 +76,7 @@ instance maybeTMonadBase :: (MonadBase b m, Monad m, Monad b) => MonadBase b (Ma
   liftBase x = lift (liftBase x)
 
 instance rwsTMonadBase :: (MonadBase b m, Monad m, Monad b, Monoid w) => MonadBase b (RWST r w s m) where
+  liftBase x = lift (liftBase x)
+
+instance freeTMonadBase :: (MonadBase b m, Monad m, Monad b, Functor f) => MonadBase b (FreeT f m) where
   liftBase x = lift (liftBase x)

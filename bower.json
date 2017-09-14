@@ -13,7 +13,9 @@
     "purescript-transformers": "3.x",
     "purescript-functors": "2.x",
     "purescript-lists": "4.x",
-    "purescript-arrays": "4.x"
+    "purescript-arrays": "4.x",
+    "purescript-freet": "^3.0.0",
+    "purescript-aff": "^4.0.0"
   },
   "license": "BSD-3-Clause",
   "devDependencies": {

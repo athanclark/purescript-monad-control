@@ -1,10 +1,13 @@
 module Data.Functor.Singleton where
 
-import Control.Monad.Trans.Control (WriterTStT (..), class MonadBaseControl, liftBaseWith, class MonadTransControl, liftWith)
+import Control.Monad.Trans.Control (WriterTStT (..), FreeTStT (..), class MonadBaseControl, liftBaseWith, class MonadTransControl, liftWith)
 import Prelude (class Functor, class Monad, Unit, unit, map, (<<<))
 import Data.Functor.Compose (Compose (..))
 import Data.Identity (Identity (..))
 import Data.Tuple (Tuple (..))
+import Data.Either (Either (..))
+import Control.Monad.Free.Trans (resume)
+import Control.Monad.Rec.Class (class MonadRec)
 
 
 -- | Instances must follow these laws:
@@ -39,9 +42,14 @@ instance singletonFunctorUnitFunction :: SingletonFunctor ((->) Unit) where
 instance singletonFunctorWriterTStT :: SingletonFunctor (WriterTStT w) where
   getSingleton (WriterTStT _ x) = x
 
+instance singletonFunctorFreeTStT :: (SingletonFunctor f, SingletonFunctor m, MonadRec m) => SingletonFunctor (FreeTStT f m) where
+  getSingleton (FreeTStT e) = case e of
+    Left x -> x
+    Right x -> getSingleton (FreeTStT (getSingleton (resume (getSingleton x))))
+
 
 liftWith_ :: forall t m stT b
-           . MonadTransControl t stT
+           . MonadTransControl m t stT
           => SingletonFunctor stT
           => Monad m
           => ((forall a. t m a -> m a) -> m b) -> t m b
