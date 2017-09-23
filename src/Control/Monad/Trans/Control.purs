@@ -2,9 +2,11 @@ module Control.Monad.Trans.Control
   ( class MonadTransControl
   , liftWith
   , restoreT
+  , integrateT
   , class MonadBaseControl
   , liftBaseWith
   , restoreM
+  , integrateM
   , defaultLiftBaseWith
   , defaultRestoreM
   , WriterTStT (..)
@@ -21,6 +23,8 @@ import Data.Maybe (Maybe (..))
 import Data.Identity (Identity (..))
 import Data.List (List)
 import Data.Monoid (class Monoid, mempty)
+import Control.Bind (class Bind)
+import Control.Applicative (class Applicative)
 import Control.Monad.Base (class MonadBase)
 import Control.Monad.Aff (Aff)
 import Control.Monad.Eff (Eff)
@@ -41,6 +45,10 @@ class (MonadTrans t, Monad m) <= MonadTransControl m t stT | t -> stT where
   liftWith :: forall b. ((forall a. t m a -> m (stT a)) -> m b) -> t m b
   restoreT :: forall a. m (stT a) -> t m a
 
+
+-- | Pack a state belonging to `t` back into it, instead of throwing it away
+integrateT :: forall m t stT a. Bind (t m) => MonadTransControl m t stT => t m (stT a) -> t m a
+integrateT x = join ((restoreT <<< pure) <$> x)
 
 
 instance readerTMonadTransControl :: Monad m => MonadTransControl m (ReaderT r) Identity where
@@ -116,6 +124,10 @@ instance rwsTMonadTransControl :: (Monoid w, Monad m) => MonadTransControl m (RW
 class MonadBase base m <= MonadBaseControl base m stM | m -> stM base where
   liftBaseWith :: forall b. ((forall a. m a -> base (stM a)) -> base b) -> m b
   restoreM     :: forall a. base (stM a) -> m a
+
+-- | Pack a state belonging to `m` back into it, instead of throwing it away
+integrateM :: forall base m stM a. Applicative base => MonadBaseControl base m stM => m (stM a) -> m a
+integrateM x = join ((restoreM <<< pure) <$> x)
 
 instance affMonadBaseControl :: MonadBaseControl (Aff e) (Aff e) Identity where
   liftBaseWith f = f (map Identity)
