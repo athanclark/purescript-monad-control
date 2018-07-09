@@ -7,19 +7,19 @@
     "output"
   ],
   "dependencies": {
-    "purescript-prelude": "3.x",
-    "purescript-console": "3.x",
-    "purescript-identity": "3.x",
-    "purescript-transformers": "3.x",
-    "purescript-functors": "2.x",
-    "purescript-lists": "4.x",
-    "purescript-arrays": "4.x",
-    "purescript-freet": "^3.0.0",
-    "purescript-aff": "^4.0.0"
+    "purescript-prelude": "4.x",
+    "purescript-console": "4.x",
+    "purescript-identity": "4.x",
+    "purescript-transformers": "4.x",
+    "purescript-functors": "3.x",
+    "purescript-lists": "5.x",
+    "purescript-arrays": "5.x",
+    "purescript-freet": "4.x",
+    "purescript-aff": "5.x"
   },
   "license": "BSD-3-Clause",
   "devDependencies": {
-    "purescript-psci-support": "3.0"
+    "purescript-psci-support": "4.x"
   },
   "repository": {
     "type": "git",
