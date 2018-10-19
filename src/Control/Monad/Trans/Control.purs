@@ -22,12 +22,9 @@ import Data.Tuple (Tuple (..))
 import Data.Maybe (Maybe (..))
 import Data.Identity (Identity (..))
 import Data.List (List)
-import Data.Monoid (class Monoid, mempty)
-import Control.Bind (class Bind)
-import Control.Applicative (class Applicative)
 import Control.Monad.Base (class MonadBase)
-import Control.Monad.Aff (Aff)
-import Control.Monad.Eff (Eff)
+import Effect.Aff (Aff)
+import Effect (Effect)
 import Control.Monad.Trans.Class (class MonadTrans, lift)
 import Control.Monad.Reader.Trans (ReaderT (..))
 import Control.Monad.Writer.Trans (WriterT (..), runWriterT)
@@ -68,8 +65,8 @@ tupleToWriterTStT :: forall w a. Tuple a w -> WriterTStT w a
 tupleToWriterTStT (Tuple a w) = WriterTStT w a
 
 
--- liftEffWith :: ((Aff eff a -> Eff eff a) -> Eff eff a) -> Aff eff a
--- liftEffWith f = makeAff \onError onSuccess ->
+-- liftEffectWith :: ((Aff eff a -> Eff eff a) -> Eff eff a) -> Aff eff a
+-- liftEffectWith f = makeAff \onError onSuccess ->
 --   f (\a -> runAff onError onSuccess a)
 
 
@@ -129,11 +126,11 @@ class MonadBase base m <= MonadBaseControl base m stM | m -> stM base where
 integrateM :: forall base m stM a. Applicative base => MonadBaseControl base m stM => m (stM a) -> m a
 integrateM x = join ((restoreM <<< pure) <$> x)
 
-instance affMonadBaseControl :: MonadBaseControl (Aff e) (Aff e) Identity where
+instance affMonadBaseControl :: MonadBaseControl Aff Aff Identity where
   liftBaseWith f = f (map Identity)
   restoreM = (map runIdentity)
 
-instance effMonadBaseControl :: MonadBaseControl (Eff e) (Eff e) Identity where
+instance effMonadBaseControl :: MonadBaseControl Effect Effect Identity where
   liftBaseWith f = f (map Identity)
   restoreM = (map runIdentity)
 

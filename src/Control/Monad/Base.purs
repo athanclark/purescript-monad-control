@@ -7,9 +7,9 @@ import Data.Maybe (Maybe)
 import Data.Identity (Identity)
 import Data.List (List)
 import Data.Monoid (class Monoid)
-import Control.Monad.Aff (Aff)
-import Control.Monad.Eff (Eff)
-import Control.Monad.Eff.Class (liftEff)
+import Effect.Aff (Aff)
+import Effect (Effect)
+import Effect.Class (liftEffect)
 import Control.Monad.Trans.Class (lift)
 import Control.Monad.Reader.Trans (ReaderT)
 import Control.Monad.Writer.Trans (WriterT)
@@ -25,32 +25,32 @@ import Control.Monad.Free.Trans (FreeT)
 class (Monad b, Monad m) <= MonadBase b m | m -> b where
   liftBase :: forall a. b a -> m a
 
-instance affMonadBase :: MonadBase (Aff e) (Aff e) where
-  liftBase = id
+instance affMonadBase :: MonadBase Aff Aff where
+  liftBase = identity
 
-instance effMonadBase :: MonadBase (Eff e) (Eff e) where
-  liftBase = id
+instance effMonadBase :: MonadBase Effect Effect where
+  liftBase = identity
 
 instance eitherMonadBase :: MonadBase (Either e) (Either e) where
-  liftBase = id
+  liftBase = identity
 
 instance tupleMonadBase :: Monoid e => MonadBase (Tuple e) (Tuple e) where
-  liftBase = id
+  liftBase = identity
 
 instance maybeMonadBase :: MonadBase Maybe Maybe where
-  liftBase = id
+  liftBase = identity
 
 instance identityMonadBase :: MonadBase Identity Identity where
-  liftBase = id
+  liftBase = identity
 
 instance listMonadBase :: MonadBase List List where
-  liftBase = id
+  liftBase = identity
 
 instance arrayMonadBase :: MonadBase Array Array where
-  liftBase = id
+  liftBase = identity
 
 instance functionMonadBase :: MonadBase ((->) r) ((->) r) where
-  liftBase = id
+  liftBase = identity
 
 
 
