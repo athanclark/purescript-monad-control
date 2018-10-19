@@ -112,7 +112,7 @@ instance maybeTMonadTransControl :: Monad m => MonadTransControl m MaybeT Maybe 
   restoreT = MaybeT
 
 instance rwsTMonadTransControl :: (Monoid w, Monad m) => MonadTransControl m (RWST r w s) (Compose (Tuple w) (Tuple s))  where
-  liftWith f = RWST \r s -> (\x -> RWSResult s x mempty) <$> f (\t -> (\(RWSResult s a w) -> Compose (Tuple w (Tuple s a))) <$> runRWST t r s)
+  liftWith f = RWST \r s -> (\x -> RWSResult s x mempty) <$> f (\t -> (\(RWSResult s' a w) -> Compose (Tuple w (Tuple s' a))) <$> runRWST t r s)
   restoreT mSt = RWST \_ _ -> (\(Compose (Tuple w (Tuple s a))) -> RWSResult s a w) <$> mSt
 
 
