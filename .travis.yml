@@ -17,7 +17,9 @@ script:
   - rm -r output/ # clean build objects
   - spago build
   - cd example/
+  - pulp build
   - pulp run > actual_output
-  - cmp -lb expected_output actual_output || cat actual_output
+  - cmp -lb expected_output actual_output
+  - spago build
   - spago run > actual_output_spago
-  - cmp -lb expected_output actual_output_spago || cat actual_output_spago
+  - cmp -lb expected_output actual_output_spago
