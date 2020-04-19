@@ -18,6 +18,6 @@ script:
   - spago build
   - cd example/
   - pulp run > actual_output
-  - cmp -lb expected_output actual_output
+  - cmp -lb expected_output actual_output || cat actual_output
   - spago run > actual_output_spago
-  - cmp -lb expected_output actual_output_spago
+  - cmp -lb expected_output actual_output_spago || cat actual_output_spago
