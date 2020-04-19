@@ -1,71 +1,90 @@
 module Main where
 
-import Data.Tuple
-import Data.Functor.Singleton (getSingleton)
-import Control.Monad.Base
-import Control.Monad.Trans.Control
+import Data.Either (Either (..))
+import Data.Functor.Singleton (class SingletonFunctor, liftBaseWith_)
+import Control.Monad.Trans.Control (class MonadBaseControl)
 
 import Prelude
-import Control.Monad.Eff (Eff)
-import Control.Monad.Eff.Class
-import Control.Monad.Eff.Console
+import Effect (Effect)
+import Effect.Aff (Aff, forkAff, joinFiber, runAff_)
+import Effect.Class (class MonadEffect, liftEffect)
+import Effect.Exception (Error)
+import Effect.Console (errorShow, logShow, log)
 
-import Control.Monad.Reader
-import Control.Monad.Writer
-import Unsafe.Coerce
-import Queue
+import Control.Monad.Reader (ReaderT, runReaderT, ask)
+import Unsafe.Coerce (unsafeCoerce)
+import Queue.One (Queue, new, draw, put, READ, WRITE) as Q
 
+
+-- | a nonsense type just for the sake of practical application
+foreign import data DB :: Type
 
 type Env =
   { host :: String
   , database :: DB
-  , outgoing :: Queue String
+  , outgoing :: Q.Queue (read :: Q.READ, write :: Q.WRITE) String
   }
 
 
-type AppM eff = ReaderT Env (Aff eff)
+type AppM = ReaderT Env Aff
 
-runAppM :: forall a eff. AppM eff a -> Eff eff Unit
+-- | Run a server
+runAppM :: forall a. Show a => AppM a -> Effect Unit
 runAppM x = do
-  queue <- newQueue
-  void $ runAff errorShow logShow $
-    runReaderT x {host: "localhost", database: unsafeCoerce unit, outgoing: queue}
+  queue <- Q.new
+
+  let resolve :: forall b. Show b => Either Error b -> Effect Unit
+      resolve eX = case eX of
+        Left e -> errorShow e
+        Right d -> logShow d
+
+  void $ runAff_ resolve $
+    runReaderT x
+      { host: "localhost"
+      , database: unsafeCoerce unit
+      , outgoing: queue
+      }
+
+  Q.put queue "foo" -- simulating some message being sent
 
 
-
-server :: AppM _ Unit
+-- | A silly server example
+server :: AppM Unit
 server = do
   {host,outgoing} <- ask
-  liftBaseWith_ \runner -> do
-    liftEff $ log "bar"
-    liftEff $ onQueue queue $ \x ->
-      database.blah...
-    f <- forkAff $ do
-      runner $ do
+  liftBaseWith_ \runInBase -> do
+    liftEffect (log "bar") -- in Aff
+    x <- Q.draw outgoing -- receive some outgoing message...
+    -- do something with x here... this is all hypothetical
+    thread <- forkAff do
+      runInBase do -- in AppM
         {database} <- ask
         -- something clever
-        x <- readQueue queue
         pure unit
     -- something with fiber
-    joinFiber f
-
-
-StT (WriterT) = Tuple a ...
-              = Tuple ... a
-
-x :: MonadBaseControl (Eff eff) m stT =>
-  => SingletonFunctor (stT m) => m Unit
-x = do
-  liftBaseWith_ \runner ->
-    thread <- async $ do
-      runner (y :: AppM _ Unit)
+    joinFiber thread
 
 
 
+-- | A _polymorphic_ server example
+doThing :: forall m stM
+         . MonadBaseControl Aff m stM
+        => MonadEffect m
+        => SingletonFunctor stM -- saying "this is basically a functor with one element"
+        => m Unit
+doThing = do
+  liftBaseWith_ \runInBase -> do
+    thread <- forkAff do
+      runInBase do
+        -- in m
+        liftEffect (log "woohoo!")
+    joinFiber thread
 
 
 
 
-main :: forall e. Eff (console :: CONSOLE | e) Unit
+
+main :: Effect Unit
 main = do
-  runFooM x
+  runAppM server
+  runAppM doThing -- coercing m to AppM

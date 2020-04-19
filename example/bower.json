@@ -7,11 +7,12 @@
     "output"
   ],
   "dependencies": {
-    "purescript-prelude": "^3.1.0",
-    "purescript-console": "^3.0.0",
-    "purescript-monad-control": "../"
+    "purescript-prelude": "^4.x",
+    "purescript-console": "^4.x",
+    "purescript-monad-control": "../",
+    "purescript-queue": "^8.0.2"
   },
   "devDependencies": {
-    "purescript-psci-support": "^3.0.0"
+    "purescript-psci-support": "^4.x"
   }
 }
