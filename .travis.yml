@@ -9,6 +9,7 @@ install:
   - cd example/
   - bower install
   - spago install
+  - cd ../
 script:
   - pulp build
   - rm -r output/ # clean build objects
