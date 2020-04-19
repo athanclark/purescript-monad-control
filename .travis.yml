@@ -1,0 +1,22 @@
+node_js:
+  - "node"
+language: node_js
+install:
+  - npm install -g purescript pulp bower spago psc-package purp-bin-simple
+  - bower install
+  - spago -x test.dhall install
+  - psc-package install
+  - cd example/
+  - bower install
+  - spago install
+script:
+  - pulp build
+  - rm -r output/ # clean build objects
+  - purp build
+  - rm -r output/ # clean build objects
+  - spago build
+  - cd example/
+  - pulp run > actual_output
+  - cmp expected_output actual_output
+  - spago run > actual_output_spago
+  - cmp expected_output actual_output_spago
