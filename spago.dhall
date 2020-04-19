@@ -5,7 +5,6 @@ You can edit this file as you like.
 { name = "purescript-monad-control"
 , dependencies =
   [ "aff"
-  , "console"
   , "effect"
   , "either"
   , "freet"
