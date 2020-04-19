@@ -1,5 +1,8 @@
 # purescript-monad-control
 
+[![Build Status](https://travis-ci.org/athanclark/purescript-monad-control.svg?branch=master)](https://travis-ci.org/athanclark/purescript-monad-control)
+[![Pursuit](https://pursuit.purescript.org/packages/purescript-monad-control/badge)](https://pursuit.purescript.org/packages/purescript-monad-control)
+
 This is a clone of Bas van Dijk and Anders Kaseorg's [monad-control](http://hackage.haskell.org/package/monad-control)
 library for purescript.
 
